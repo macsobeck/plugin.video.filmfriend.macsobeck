@@ -1,65 +1,77 @@
-# Filmfriend Kodi Add-on for Kodi 21 Omega and LibreELEC
+# Filmfriend Kodi Add-on – Kodi 21 Omega & LibreELEC
 
-This is an independent maintenance fork of Ingo-FP-Angel's
-`plugin.video.filmfriend.de`. It was created so that authentication changes
-required by Stadtbibliothek Stuttgart could be handled immediately, without
-waiting for another upstream release. The fork is maintained by macsobeck and
-uses a separate add-on ID and release path.
+Use **Filmfriend on Kodi** to watch films and series from participating public
+libraries. This independent Filmfriend Kodi add-on is maintained by macsobeck
+for Kodi 21 Omega and LibreELEC, with Widevine playback and current
+authentication support, including changes affecting Stuttgart Public Library.
 
-## General information
+[Download the latest Filmfriend release](https://github.com/macsobeck/plugin.video.filmfriend.macsobeck/releases/latest)
+· [Installation guide](https://macsobeck.github.io/plugin.video.filmfriend.macsobeck/)
 
-A plugin for KODI to play shows and movies from the filmfriend streaming portal for public libraries in several European countries.
+> This is an independent community project and is not affiliated with
+> Filmfriend. A valid account at a participating public library is required.
 
-You need an account with a public library in order to access this service.
+## Features and compatibility
 
-Supported countries are Germany, Austria, Switzerland, Liechtenstein, Belgium, Luxembourg, and France.
+- Watch Filmfriend films and series directly in Kodi
+- Supports Kodi 21 Omega, LibreELEC, and Python 3
+- Widevine playback through InputStream Adaptive
+- English and German user interface
+- Participating libraries in Germany, Austria, Switzerland, Liechtenstein,
+  Belgium, Luxembourg, and France
+- Promptly maintained authentication support, particularly for Stuttgart
+  Public Library
 
-Available languages for the user interface are German and English.
+## Install the Filmfriend Kodi add-on
 
-## Install the add-on
+1. Download the current Kodi installation file from
+   [GitHub Releases](https://github.com/macsobeck/plugin.video.filmfriend.macsobeck/releases/latest).
+2. In Kodi, open **Add-ons → Install from zip file** and select the downloaded
+   file.
+3. Make sure Widevine CDM is configured, for example through the settings of
+   the **InputStream Helper** add-on.
+4. Open this add-on's settings and select **Login**.
+5. Choose your country and library, then sign in with your valid library
+   account.
 
-Download the latest Kodi installation ZIP from the
-[GitHub Releases page](https://github.com/macsobeck/plugin.video.filmfriend.macsobeck/releases/latest).
+This fork uses the separate add-on ID `plugin.video.filmfriend.macsobeck`.
+Repositories containing `plugin.video.filmfriend.de` therefore cannot replace
+or update it.
 
-The independent fork uses the add-on ID
-`plugin.video.filmfriend.macsobeck`, so repositories containing
-`plugin.video.filmfriend.de` cannot update or replace it.
+## Move from another Filmfriend add-on
 
-Install the ZIP locally, start it once to migrate existing settings from
-`plugin.video.filmfriend.de`, verify playback, and then disable or uninstall the
-former add-on. Do not uninstall the former add-on before the first start if you
-want its settings and tokens migrated automatically.
+Install this add-on alongside the existing `plugin.video.filmfriend.de` add-on
+and start it once. This allows existing settings and tokens to be migrated.
+Verify login and playback before disabling or removing the former add-on.
 
-## Using the addon
+## Login and playback help
 
-Make sure you've installed the Widevine CDM library (e.g. from the settings of the "InputStream Helper" addon).
-
-Before playing videos or accessing your personal watchlist, please use the "Login" function in the settings of this addon.
+- **“Login has expired”:** Install the latest version, then sign in again from
+  the add-on settings.
+- **Video does not start:** Check that InputStream Adaptive and Widevine CDM
+  are configured.
+- **Library is missing or login fails:** Open a
+  [GitHub issue](https://github.com/macsobeck/plugin.video.filmfriend.macsobeck/issues)
+  and include your Kodi version, operating system, and library. Never publish
+  passwords or tokens.
 
 ## History and licensing
 
-This add-on is free for everyone to use for any purpose, study, modify, and
-share under the GNU General Public License version 2 only (`GPL-2.0-only`). If
-you distribute it or a modified version, you must keep it under that license
-and make the corresponding source code available. See `LICENSE-NOTICE.md` for
-a plain-language summary and `LICENSE.txt` for the controlling license text.
+This is an independent maintenance fork of Ingo-FP-Angel's
+`plugin.video.filmfriend.de`. It was created so that authentication changes
+required by Stuttgart Public Library can be handled promptly. Historical
+attribution does not imply active ownership or an update relationship.
 
-Maintained by macsobeck as an independent GPL-2.0-only fork of the add-on by
-Ingo-FP-Angel. This fork was created to respond immediately to the provider
-changes affecting Stadtbibliothek Stuttgart. The earlier community add-on was
-itself forked from v1.0.0 of
-https://github.com/xbmc/repo-plugins/tree/matrix/plugin.video.filmfriend by
-sarbes. Historical attribution is retained; it does not imply active ownership
-or an update relationship.
+The add-on is licensed under GPL-2.0-only. See `LICENSE-NOTICE.md` for a
+plain-language summary and `LICENSE.txt` for the controlling license text.
 
 ## Development
 
-The architecture, authentication/token lifecycle, Filmfriend endpoints,
-Widevine playback path, migration behavior, and Kodi 21/LibreELEC risks are
+Architecture, authentication and token lifecycle, Filmfriend endpoints,
+Widevine playback, migration behavior, and Kodi 21/LibreELEC risks are
 documented in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-The API, authentication, diagnostics, and playback-property tests run without
-Kodi:
+Run the tests without Kodi:
 
 ```sh
 python3 -m unittest discover -s tests -v

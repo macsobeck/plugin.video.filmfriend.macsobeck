@@ -1,0 +1,6 @@
+title: "Filmfriend Kodi Add-on"
+description: "Install Filmfriend on Kodi 21 Omega and LibreELEC, sign in through your public library, and stream films with Widevine."
+lang: "en-US"
+url: "https://macsobeck.github.io"
+baseurl: "/plugin.video.filmfriend.macsobeck"
+repository: "macsobeck/plugin.video.filmfriend.macsobeck"
