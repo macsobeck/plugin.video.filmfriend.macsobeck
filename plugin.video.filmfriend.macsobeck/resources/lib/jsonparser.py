@@ -7,7 +7,11 @@ import xbmcgui
 import resources.lib.external.libmediathek4utils as lm4utils
 from resources.lib.api import ApiError, NotFound
 from resources.lib.auth import AuthenticationError, LoginExpired, LoginRequired
-from resources.lib.catalog import release_date_metadata
+from resources.lib.catalog import (
+	genre_records,
+	nested_season_number,
+	release_date_metadata,
+)
 from resources.lib.kodi_runtime import build_runtime
 
 __addon__ = xbmcaddon.Addon()
@@ -153,16 +157,26 @@ def parseResponse(responseJson, content='videos'):
 
 		elif item['kind'] == 'Season':
 			d = {'type':'season', 'params':{'mode':'listSearch', 'content':'episodes'}, 'metadata':{'art':{},'genres':[]}}
-			d['metadata']['name'] = f"{_getString(result['series'],'title')} - Season {str(result['seasonNumber'])}"
+			series = result.get('series')
+			if not isinstance(series, dict):
+				series = {}
+			season_number = result.get('seasonNumber')
+			series_name = (
+				_getString(series, 'title') or
+				_getString(result, 'title') or '')
+			if season_number is None:
+				d['metadata']['name'] = series_name
+			else:
+				d['metadata']['name'] = (
+					f"{series_name} - Season {season_number}")
+				d['metadata']['season'] = season_number
 			d['metadata']['plot'] = _getString(result,'synopsis')
 
-			d['metadata']['season'] = result['seasonNumber']
 			d['metadata']['mpaa'] = result.get(
 				'motionPictureContentRating', '')
 			d['metadata']['art'] = _getArt(result)
-			if 'genres' in result['series']:
-				for genre in result['series']['genres']:
-					d['metadata']['genres'].append(_getString(genre,'name'))
+			for genre in genre_records(series):
+				d['metadata']['genres'].append(_getString(genre,'name'))
 			d['metadata'].update(
 				release_date_metadata(result.get('releaseDate')))
 
@@ -178,12 +192,14 @@ def parseResponse(responseJson, content='videos'):
 			d['metadata']['plot'] = _getString(result,'synopsis')
 			d['metadata']['plotoutline'] = _getString(result,'teaser')
 
-			if 'season' in result:
-				d['metadata']['season'] = result['season']['seasonNumber']
-			if 'episodeNumber' in result:
-				d['metadata']['episode'] = result['episodeNumber']
+			season_number = nested_season_number(result.get('season'))
+			if season_number is not None:
+				d['metadata']['season'] = season_number
+			episode_number = result.get('episodeNumber')
+			if episode_number is not None:
+				d['metadata']['episode'] = episode_number
 				d['type'] = 'episode'
-			d['metadata']['duration'] = result['runtime']
+			d['metadata']['duration'] = result.get('runtime', '')
 			d['metadata'].update(
 				release_date_metadata(result.get('releaseDate')))
 			d['metadata']['art'] = _getArt(result)
@@ -202,9 +218,8 @@ def parseResponse(responseJson, content='videos'):
 						d['metadata']['writers'].append(_getName(participant))
 					elif participant['kind'] in ['Misc', 'Camera']:
 						d['metadata']['credits'].append(_getName(participant))
-			if 'genres' in result:
-				for genre in result['genres']:
-					d['metadata']['genres'].append(_getString(genre,'name'))
+			for genre in genre_records(result):
+				d['metadata']['genres'].append(_getString(genre,'name'))
 
 			d['params']['video'] = result["id"]
 			res['items'].append(d)
@@ -215,9 +230,17 @@ def parseResponse(responseJson, content='videos'):
 
 	if content == 'tvshows':
 		# sort by name unless we're showing the seasons of a single tv show, then sort by season number
-		res['items'] = sorted(res['items'], key=lambda entry: entry['metadata']['season'] if entry['type'] == 'season' else entry['metadata']['name'])
+		res['items'] = sorted(
+			res['items'],
+			key=lambda entry: entry['metadata'].get(
+				'season', float('inf'))
+			if entry['type'] == 'season'
+			else entry['metadata'].get('name', ''))
 	elif content == 'episodes':
-		res['items'] = sorted(res['items'], key=lambda entry: entry['metadata']['episode'])
+		res['items'] = sorted(
+			res['items'],
+			key=lambda entry: entry['metadata'].get(
+				'episode', float('inf')))
 
 	return res
 
@@ -265,17 +288,14 @@ def _emptyMedia():
 	return {'media':[]}
 
 def _getString(d,k):
-	try:
-		s = d.get(lang[k], '')
-		if s != '':
-			return s
-		else:
-			return d[english[k]]
-	except:
-		try:
-			return d.get(k)
-		except:
-			return ''
+	if not isinstance(d, dict):
+		return ''
+	for field in (lang.get(k), english.get(k), k):
+		if field:
+			value = d.get(field)
+			if value not in (None, ''):
+				return value
+	return ''
 
 def _getName(participant):
 	if 'firstName' in participant['person']:

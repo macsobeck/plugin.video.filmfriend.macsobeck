@@ -1,3 +1,9 @@
+v1.4.4
+- [fix] Accept missing or null series, genre, and nested season metadata without failing catalogue navigation.
+- [hardening] Replace broad exception suppression with explicit optional-metadata validation.
+- [test] Cover incomplete genre lists and nested season objects.
+- [credit] Thanks to GitHub user hypnotoad for reporting these edge cases in pull request #1.
+
 v1.4.3
 - [fix] Finish a cancelled search without passing a null result to the directory renderer.
 - [test] Cover cancelling the Kodi search input dialog.

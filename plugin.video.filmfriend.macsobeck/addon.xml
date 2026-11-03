@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.filmfriend.macsobeck" name="Filmfriend AT/BE/CH/DE/FR/LI/LU (macsobeck)" version="1.4.3" provider-name="macsobeck">
+<addon id="plugin.video.filmfriend.macsobeck" name="Filmfriend AT/BE/CH/DE/FR/LI/LU (macsobeck)" version="1.4.4" provider-name="macsobeck">
     <requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests" version="2.19.1"/>
@@ -14,6 +14,12 @@
 		<license>GPL-2.0-only</license>
 		<source>https://github.com/macsobeck/plugin.video.filmfriend.macsobeck</source>
         <news><![CDATA[
+	v1.4.4 (2026-11-03)
+	- Keep series and episodes usable when genres, series, or season metadata is missing or null.
+	- Validate optional catalogue structures explicitly without suppressing unrelated exceptions.
+	- Add regression coverage for incomplete genre and season metadata.
+	- Thanks to GitHub user hypnotoad for reporting these edge cases in pull request #1.
+
 	v1.4.3 (2026-11-01)
 	- Handle a cancelled search as an empty result instead of a directory error.
 	- Add regression coverage for cancelling the Kodi search input dialog.

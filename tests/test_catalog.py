@@ -7,10 +7,36 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "plugin.video.filmfriend.macsobeck"))
 
-from resources.lib.catalog import release_date_metadata  # noqa: E402
+from resources.lib.catalog import (  # noqa: E402
+    genre_records,
+    nested_season_number,
+    release_date_metadata,
+)
 
 
 class CatalogMetadataTests(unittest.TestCase):
+    def test_genre_records_accept_valid_entries_only(self):
+        valid = {"name": "Drama"}
+
+        self.assertEqual(
+            (valid,),
+            genre_records({"genres": [valid, None, "invalid"]}),
+        )
+
+    def test_genre_records_ignore_missing_null_and_malformed_lists(self):
+        for container in (
+                None, {}, {"genres": None}, {"genres": "Drama"}):
+            with self.subTest(container=container):
+                self.assertEqual((), genre_records(container))
+
+    def test_nested_season_number_accepts_a_mapping(self):
+        self.assertEqual(3, nested_season_number({"seasonNumber": 3}))
+
+    def test_nested_season_number_ignores_incomplete_metadata(self):
+        for season in (None, {}, "Season 3", []):
+            with self.subTest(season=season):
+                self.assertIsNone(nested_season_number(season))
+
     def test_iso_release_date_is_translated_to_kodi_metadata(self):
         self.assertEqual(
             {
