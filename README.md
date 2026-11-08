@@ -65,6 +65,13 @@ attribution does not imply active ownership or an update relationship.
 The add-on is licensed under GPL-2.0-only. See `LICENSE-NOTICE.md` for a
 plain-language summary and `LICENSE.txt` for the controlling license text.
 
+## Development assistance
+
+This repository was developed and is maintained by macsobeck with assistance
+from OpenAI Codex for code analysis, implementation, testing, documentation,
+and release preparation. All changes are reviewed and published by the
+repository maintainer.
+
 ## Development
 
 Architecture, authentication and token lifecycle, Filmfriend endpoints,
