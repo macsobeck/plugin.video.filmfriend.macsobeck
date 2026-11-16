@@ -1,3 +1,10 @@
+v1.4.5
+- [fix] Use Filmfriend's authenticated playback URI endpoint as the authoritative availability check.
+- [fix] Report GeoBlocked media as a geographic restriction without refreshing or invalidating valid tokens.
+- [diagnostics] Log media state kind and PIN requirement without credentials or token values.
+- [fix] Complete migration when the former add-on is absent so its ID is not queried repeatedly.
+- [test] Cover divergent authenticated media state and completed legacy migration handling.
+
 v1.4.4
 - [fix] Accept missing or null series, genre, and nested season metadata without failing catalogue navigation.
 - [hardening] Replace broad exception suppression with explicit optional-metadata validation.

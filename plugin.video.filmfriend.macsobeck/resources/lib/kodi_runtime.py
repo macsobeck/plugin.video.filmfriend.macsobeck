@@ -15,6 +15,7 @@ from resources.lib.diagnostics import StructuredLogger
 from resources.lib.legacy_settings import (
     LEGACY_ADDON_ID,
     migrate_legacy_settings,
+    should_probe_legacy_addon,
 )
 
 
@@ -48,14 +49,14 @@ def build_runtime(language="en"):
     addon = xbmcaddon.Addon()
     settings = KodiSettings(addon)
     logger = build_logger(addon)
-    if addon.getAddonInfo("id") != LEGACY_ADDON_ID:
+    if should_probe_legacy_addon(addon.getAddonInfo("id"), settings):
         try:
             legacy_addon = xbmcaddon.Addon(id=LEGACY_ADDON_ID)
         except (RuntimeError, SystemError):
             legacy_addon = None
-        if legacy_addon is not None:
-            migrate_legacy_settings(
-                settings, KodiSettings(legacy_addon), logger=logger)
+        legacy_settings = (
+            KodiSettings(legacy_addon) if legacy_addon is not None else None)
+        migrate_legacy_settings(settings, legacy_settings, logger=logger)
     profile = xbmcvfs.translatePath(addon.getAddonInfo("profile"))
     os.makedirs(profile, exist_ok=True)
     refresh_lock = FileRefreshLock(os.path.join(profile, "auth-refresh.lock"))

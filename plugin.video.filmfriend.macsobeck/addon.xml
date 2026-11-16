@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.filmfriend.macsobeck" name="Filmfriend AT/BE/CH/DE/FR/LI/LU (macsobeck)" version="1.4.4" provider-name="macsobeck">
+<addon id="plugin.video.filmfriend.macsobeck" name="Filmfriend AT/BE/CH/DE/FR/LI/LU (macsobeck)" version="1.4.5" provider-name="macsobeck">
     <requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests" version="2.19.1"/>
@@ -14,6 +14,13 @@
 		<license>GPL-2.0-only</license>
 		<source>https://github.com/macsobeck/plugin.video.filmfriend.macsobeck</source>
         <news><![CDATA[
+	v1.4.5 (2026-11-16)
+	- Let Filmfriend's authenticated playback endpoint decide availability instead of rejecting divergent metadata states locally.
+	- Report Filmfriend's GeoBlocked state as a geographic restriction instead of an expired login.
+	- Log only credential-safe media state and PIN diagnostics before playback.
+	- Complete the former add-on migration probe when the former add-on is absent, preventing repeated lookup errors.
+	- Add regression coverage for the playback-state and migration-probe fixes.
+
 	v1.4.4 (2026-11-03)
 	- Keep series and episodes usable when genres, series, or season metadata is missing or null.
 	- Validate optional catalogue structures explicitly without suppressing unrelated exceptions.

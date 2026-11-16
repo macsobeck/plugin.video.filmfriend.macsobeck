@@ -9,8 +9,10 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "plugin.video.filmfriend.macsobeck"))
 
 from resources.lib.legacy_settings import (  # noqa: E402
+    LEGACY_ADDON_ID,
     MIGRATION_MARKER,
     migrate_legacy_settings,
+    should_probe_legacy_addon,
 )
 from tests.helpers import FakeSettings  # noqa: E402
 
@@ -24,6 +26,26 @@ class Logger:
 
 
 class LegacySettingsTests(unittest.TestCase):
+    def test_completed_migration_skips_obsolete_addon_lookup(self):
+        current = FakeSettings({MIGRATION_MARKER: "true"})
+
+        self.assertFalse(should_probe_legacy_addon(
+            "plugin.video.filmfriend.macsobeck", current))
+        self.assertFalse(should_probe_legacy_addon(
+            LEGACY_ADDON_ID, FakeSettings()))
+        self.assertTrue(should_probe_legacy_addon(
+            "plugin.video.filmfriend.macsobeck", FakeSettings()))
+
+    def test_missing_legacy_addon_completes_migration_probe(self):
+        current = FakeSettings()
+        logger = Logger()
+
+        self.assertTrue(migrate_legacy_settings(current, None, logger))
+        self.assertEqual("true", current.get(MIGRATION_MARKER))
+        self.assertFalse(should_probe_legacy_addon(
+            "plugin.video.filmfriend.macsobeck", current))
+        self.assertEqual(0, logger.events[0][1]["copied_count"])
+
     def test_migrates_tokens_without_overwriting_current_values(self):
         current = FakeSettings({"library": "Current library"})
         legacy = FakeSettings({

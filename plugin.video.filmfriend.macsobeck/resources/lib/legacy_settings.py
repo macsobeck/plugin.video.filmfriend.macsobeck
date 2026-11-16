@@ -24,19 +24,28 @@ MIGRATED_SETTING_IDS = (
 )
 
 
+def should_probe_legacy_addon(current_addon_id, current):
+    """Return whether Kodi should try to open the former add-on settings."""
+    return (
+        current_addon_id != LEGACY_ADDON_ID and
+        not current.get(MIGRATION_MARKER)
+    )
+
+
 def migrate_legacy_settings(current, legacy, logger=None):
     """Copy non-empty legacy values into empty settings exactly once."""
     if current.get(MIGRATION_MARKER):
         return False
 
     copied = 0
-    for setting_id in MIGRATED_SETTING_IDS:
-        if current.get(setting_id):
-            continue
-        value = legacy.get(setting_id)
-        if value:
-            current.set(setting_id, value)
-            copied += 1
+    if legacy is not None:
+        for setting_id in MIGRATED_SETTING_IDS:
+            if current.get(setting_id):
+                continue
+            value = legacy.get(setting_id)
+            if value:
+                current.set(setting_id, value)
+                copied += 1
 
     current.set(MIGRATION_MARKER, "true")
     if logger:

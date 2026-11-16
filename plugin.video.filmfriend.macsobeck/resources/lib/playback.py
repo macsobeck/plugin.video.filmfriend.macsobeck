@@ -5,6 +5,23 @@
 import urllib.parse
 
 
+def media_state_fields(details):
+    """Return credential-safe availability fields from media details."""
+    if not isinstance(details, dict):
+        return None, None
+    state = details.get("state")
+    if not isinstance(state, dict):
+        return None, None
+
+    state_kind = state.get("kind")
+    if not isinstance(state_kind, str) or not state_kind:
+        state_kind = None
+    pin_required = state.get("isPinRequired")
+    if not isinstance(pin_required, bool):
+        pin_required = None
+    return state_kind, pin_required
+
+
 def widevine_properties(license_url):
     headers = urllib.parse.urlencode({
         "Content-Type": "application/octet-stream",

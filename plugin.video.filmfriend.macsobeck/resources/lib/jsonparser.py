@@ -13,6 +13,7 @@ from resources.lib.catalog import (
 	release_date_metadata,
 )
 from resources.lib.kodi_runtime import build_runtime
+from resources.lib.playback import media_state_fields
 
 __addon__ = xbmcaddon.Addon()
 __addonid__ = __addon__.getAddonInfo('id')
@@ -245,7 +246,9 @@ def parseResponse(responseJson, content='videos'):
 	return res
 
 def getVideoUrl(videoId):
-	# first check the media type and if it's currently available
+	# Determine the media type, then let Filmfriend's playback endpoint make
+	# the authoritative availability decision. The authenticated metadata state
+	# has started diverging from the public catalogue for playable titles.
 	mediaType = "movies"
 	try:
 		try:
@@ -254,11 +257,27 @@ def getVideoUrl(videoId):
 			# fallback: try if it's an episode
 			mediaType = "episodes"
 			details = _api.media_details(mediaType, videoId)
-		if details["state"]["kind"] != "Active":
+		state_kind, pin_required = media_state_fields(details)
+		_logger.info(
+			"playback.media_state",
+			media_type=mediaType,
+			pin_required=pin_required,
+			state_kind=state_kind or "missing",
+		)
+		if state_kind == "GeoBlocked":
+			_logger.warning(
+				"playback.geo_blocked", media_type=mediaType)
 			lm4utils.displayMsg(
-				lm4utils.getTranslation(30603),
-				lm4utils.getTranslation(30604))
+				lm4utils.getTranslation(30606),
+				lm4utils.getTranslation(30607))
 			return _emptyMedia()
+		if state_kind not in (None, "Active"):
+			_logger.warning(
+				"playback.media_state_not_authoritative",
+				media_type=mediaType,
+				pin_required=pin_required,
+				state_kind=state_kind,
+			)
 		videoInfo = _api.media_uri(mediaType, videoId)
 	except (ApiError, AuthenticationError, KeyError) as error:
 		_handleApiError(error)

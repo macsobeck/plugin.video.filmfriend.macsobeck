@@ -7,10 +7,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "plugin.video.filmfriend.macsobeck"))
 
-from resources.lib.playback import widevine_properties  # noqa: E402
+from resources.lib.playback import (  # noqa: E402
+    media_state_fields,
+    widevine_properties,
+)
 
 
 class PlaybackTests(unittest.TestCase):
+    def test_media_state_fields_are_optional_and_credential_safe(self):
+        self.assertEqual(
+            ("Active", True),
+            media_state_fields({
+                "state": {"kind": "Active", "isPinRequired": True},
+            }),
+        )
+        self.assertEqual((None, None), media_state_fields({"state": None}))
+        self.assertEqual((None, None), media_state_fields(None))
+
     def test_kodi_21_widevine_properties_use_one_drm_interface(self):
         props = widevine_properties("https://license.example.test/wv")
 

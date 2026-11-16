@@ -227,6 +227,14 @@ msgctxt "#30605"
 msgid "Genres"
 msgstr "Genres"
 
+msgctxt "#30606"
+msgid "Geographic restriction"
+msgstr "Geographic restriction"
+
+msgctxt "#30607"
+msgid "Playback blocked for network location"
+msgstr "Filmfriend has blocked playback for the current network location. Signing in again will not resolve this. Disable any VPN or proxy and try again, or contact Filmfriend or your library."
+
 ### translations below are imported from "script.module.libmediathek4" that's currently broken
 msgctxt "#32000"
 msgid "This month"
