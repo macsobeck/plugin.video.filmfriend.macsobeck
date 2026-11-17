@@ -1,5 +1,7 @@
 # Filmfriend Kodi Add-on – Kodi 21 Omega & LibreELEC
 
+English | [Deutsch](README.de.md)
+
 Use **Filmfriend on Kodi** to watch films and series from participating public
 libraries. This independent Filmfriend Kodi add-on is maintained by macsobeck
 for Kodi 21 Omega and LibreELEC, with Widevine playback and current
